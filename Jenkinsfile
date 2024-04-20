@@ -12,7 +12,7 @@ pipeline {
     stages {
        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/AMZATH0320/Frontend.git'
+                git branch: 'master', url: 'https://github.com/AMZATH0320/Frontend.git'
             }
         }
 
