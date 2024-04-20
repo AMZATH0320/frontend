@@ -1,24 +1,24 @@
 pipeline {
     agent {
-        label 'Docker-Node'
+        label 'j-server'
     }
 
     environment {
-        KUBECONFIG_CREDENTIAL_ID = 'k8s-kubeconfig-dev'
+        KUBECONFIG_CREDENTIAL_ID = 'k8s'
         version = "frontend_${env.BUILD_NUMBER}"
-        docker_image = "persevcareers6577/perseverance-project:${version}"
+        docker_image = "amzath0320/frontend:${version}"
     }
 
     stages {
        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/persevcareers/Final-Project-Frontend.git'
+                git branch: 'main', url: 'https://github.com/AMZATH0320/Frontend.git'
             }
         }
 
        stage('Login to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh "echo \"$DOCKER_PASSWORD\" | sudo docker login --username \"$DOCKER_USERNAME\" --password-stdin"
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     def dockerfilePath = '.'
-                    sh "sudo docker build -t 'persevcareers6577/perseverance-project:${version}' ."
+                    sh "sudo docker build -t 'amzath0320/frontend:${version}' ."
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh "sudo docker push 'persevcareers6577/perseverance-project:${version}'"
+                    sh "sudo docker push 'amzath0320/frontend:${version}'"
                 }
             }
         } 
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     def outputFilePath = "${env.WORKSPACE}/trivy_scan.txt"
-                    def docker_image = "persevcareers6577/perseverance-project:${version}"
+                    def docker_image = "amzath0320/frontend:${version}"
                     sh "sudo trivy image ${docker_image} > ${outputFilePath}"
                     sh "cat ${outputFilePath}"
                 }
