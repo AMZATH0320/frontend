@@ -6,7 +6,7 @@ pipeline {
     environment {
         KUBECONFIG_CREDENTIAL_ID = 'k8s'
         version = "frontend_${env.BUILD_NUMBER}"
-        docker_image = "amzath0320/frontend:${version}"
+        docker_image = "amzath0304/frontend:${version}"
     }
 
     stages {
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 script {
                     def dockerfilePath = '.'
-                    sh "sudo docker build -t 'amzath0320/frontend:${version}' ."
+                    sh "sudo docker build -t 'amzath0304/frontend:${version}' ."
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh "sudo docker push 'amzath0320/frontend:${version}'"
+                    sh "sudo docker push 'amzath0304/frontend:${version}'"
                 }
             }
         } 
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     def outputFilePath = "${env.WORKSPACE}/trivy_scan.txt"
-                    def docker_image = "amzath0320/frontend:${version}"
+                    def docker_image = "amzath0304/frontend:${version}"
                     sh "sudo trivy image ${docker_image} > ${outputFilePath}"
                     sh "cat ${outputFilePath}"
                 }
